@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Bài 02 - XML và HTML</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f4f9; }
+        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); max-width: 500px; margin: auto; }
+        .result { margin-top: 15px; padding: 12px; background: #e9ecef; border-left: 4px solid #28a745; white-space: pre-line; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Bài 02: Danh sách các đơn vị</h2>
+    <div id="ketQua" class="result">Đang tải dữ liệu...</div>
+</div>
+
+<script>
+    async function chayBai02() {
+        try {
+            let response = await fetch('danhsachnhanvien.xml');
+            let textData = await response.text();
+            let parser = new DOMParser();
+            let xmlDoc = parser.parseFromString(textData, "text/xml");
+
+            let nhanViens = xmlDoc.getElementsByTagName("nhanvien");
+            let dsDonVi = new Set();
+
+            for (let nv of nhanViens) {
+                let donvi = nv.getElementsByTagName("donvi")[0].textContent.trim();
+                dsDonVi.add(donvi);
+            }
+
+            let ketQuaStr = "Danh sách các đơn vị:\n" + Array.from(dsDonVi).map(dv => `- ${dv}`).join("\n");
+            document.getElementById("ketQua").innerText = ketQuaStr;
+        } catch (error) {
+            document.getElementById("ketQua").innerText = "Lỗi: Hãy chắc chắn bạn đang chạy bằng Live Server!";
+        }
+    }
+
+    chayBai02();
+</script>
+
+</body>
+</html>

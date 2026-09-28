@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Bài 03 - XML và HTML</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f4f9; }
+        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); max-width: 500px; margin: auto; }
+        .result { margin-top: 15px; padding: 12px; background: #e9ecef; border-left: 4px solid #dc3545; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Bài 03: Tổng lương nhân viên</h2>
+    <div id="ketQua" class="result">Đang tải dữ liệu...</div>
+</div>
+
+<script>
+    async function chayBai03() {
+        try {
+            let response = await fetch('danhsachnhanvien.xml');
+            let textData = await response.text();
+            let parser = new DOMParser();
+            let xmlDoc = parser.parseFromString(textData, "text/xml");
+
+            let nhanViens = xmlDoc.getElementsByTagName("nhanvien");
+            let tongLuong = 0;
+
+            for (let nv of nhanViens) {
+                let luongStr = nv.getElementsByTagName("luong")[0].textContent.replace(/\./g, '').trim();
+                tongLuong += parseFloat(luongStr);
+            }
+
+            let tongLuongFormatted = tongLuong.toLocaleString('vi-VN');
+            document.getElementById("ketQua").innerText = `Tổng lương của tất cả nhân viên là: ${tongLuongFormatted} VNĐ`;
+        } catch (error) {
+            document.getElementById("ketQua").innerText = "Lỗi: Hãy chắc chắn bạn đang chạy bằng Live Server!";
+        }
+    }
+
+    chayBai03();
+</script>
+
+</body>
+</html>
